@@ -12,7 +12,9 @@ import requests
 
 from libturpial.lib.interfaces.service import GenericService
 
+
 class PreviewMediaService(GenericService):
+
     def __init__(self):
         self.log = logging.getLogger('Service')
         self.url_pattern = ""

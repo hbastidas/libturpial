@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url tr.im
+# @url tr.im
+
+
 class Trim(Service):
 
     def __init__(self, apikey=None, username_pass=None):
@@ -10,7 +12,7 @@ class Trim(Service):
         self.username_pass = username_pass
 
     def shrink(self, bigurl, custom=None, searchtags=None, privacycode=None,
-                newtrim=False, sandbox=False):
+               newtrim=False, sandbox=False):
         parameters = {}
         parameters['url'] = bigurl
         if custom:
@@ -25,9 +27,11 @@ class Trim(Service):
             parameters['sandbox'] = '1'
         if self.apikey:
             parameters['api_key'] = self.apikey
-        resp = request('http://api.tr.im/api/trim_url.json', parameters, self.username_pass)
+        resp = request(
+            'http://api.tr.im/api/trim_url.json', parameters, self.username_pass)
         jdata = json.loads(resp.read())
-        self.status = (int(jdata['status']['code']), str(jdata['status']['message']))
+        self.status = (int(jdata['status'][
+                       'code']), str(jdata['status']['message']))
         if not 200 <= self.status[0] < 300:
             raise ShortyError(self.status[1])
         self.trimpath = str(jdata['trimpath'])
@@ -43,10 +47,11 @@ class Trim(Service):
         parameters = {'trimpath': turl[2].strip('/')}
         if self.apikey:
             parameters['api_key'] = self.apikey
-        resp = request('http://api.tr.im/api/trim_destination.json', parameters)
+        resp = request(
+            'http://api.tr.im/api/trim_destination.json', parameters)
         jdata = json.loads(resp.read())
-        self.status = (int(jdata['status']['code']), str(jdata['status']['message']))
+        self.status = (int(jdata['status'][
+                       'code']), str(jdata['status']['message']))
         if not 200 <= self.status[0] < 300:
             raise ShortyError(self.status[1])
         return str(jdata['destination'])
-

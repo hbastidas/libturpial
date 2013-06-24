@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url digg.com
+# @url digg.com
+
+
 class Digg(Service):
 
     def __init__(self, appkey=None):
@@ -19,7 +21,7 @@ class Digg(Service):
         if not self.appkey:
             raise ShortyError('Must set an appkey')
         resp = request('http://services.digg.com/url/short/create',
-            {'url': bigurl, 'appkey': self.appkey, 'type': 'json'})
+                       {'url': bigurl, 'appkey': self.appkey, 'type': 'json'})
         jdata = json.loads(resp.read())['shorturls'][0]
         self.itemid = jdata['itemid']
         self.view_count = jdata['view_count']
@@ -31,8 +33,8 @@ class Digg(Service):
             if turl[1].lstrip('www.') != 'digg.com':
                 raise ShortyError('Not a valid digg url')
             resp = request('http://services.digg.com/url/short/%s' % quote(
-                            turl[2].strip('/')),
-                            {'appkey': self.appkey, 'type': 'json'})
+                turl[2].strip('/')),
+                {'appkey': self.appkey, 'type': 'json'})
             jdata = json.loads(resp.read())['shorturls'][0]
             self.itemid = jdata['itemid']
             self.view_count = jdata['view_count']
@@ -41,4 +43,3 @@ class Digg(Service):
             self.itemid = None
             self.view_count = None
             return get_redirect(tinyurl)
-

@@ -2,6 +2,7 @@
 
 
 class Profile:
+
     """
     This model handles a user profile.
     """

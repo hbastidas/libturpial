@@ -23,6 +23,7 @@ from libturpial.api.managers.columnmanager import ColumnManager
 
 
 class Core:
+
     """The main core libturpial. This should be the only class you need to
     instanciate to use libturpial.
 
@@ -52,7 +53,7 @@ class Core:
     >>> response = c.get_own_profile('foo-twitter')
     >>> if response.code > 0:
     >>>     raise Exception, response.errmsg
-    >>> 
+    >>>
     >>> value = response.items
 
     If the request returns an array, you can iterate over the elements with:
@@ -92,9 +93,9 @@ class Core:
         response = requests.get(url)
         return response.content
 
-    ###########################################################################
+    #
     # Multi-account and multi-column API
-    ###########################################################################
+    #
 
     def register_account(self, account):
         # TODO: Update doc, protocol object
@@ -107,7 +108,7 @@ class Core:
         return self.accman.register(account)
 
     def unregister_account(self, account_id, delete_all=False):
-        """Removes an account form config. If *delete_all* is **True** removes 
+        """Removes an account form config. If *delete_all* is **True** removes
         all the config files asociated to that account.
         """
         return self.accman.unregister(account_id, delete_all)
@@ -162,9 +163,9 @@ class Core:
         """
         return self.accman.accounts()
 
-    ###########################################################################
+    #
     # Microblogging API
-    ###########################################################################
+    #
 
     def get_column_statuses(self, account_id, column_id,
                             count=NUM_STATUSES, since_id=None):
@@ -252,7 +253,7 @@ class Core:
             try:
                 account = self.accman.get(account_id)
                 response[account_id] = account.update_status(text)
-            except Exception, exc:
+            except Exception as exc:
                 response[account_id] = exc
         return response
 
@@ -285,7 +286,7 @@ class Core:
         return account.destroy_direct_message(status_id)
 
     def update_profile(self, account_id, fullname=None, url=None, bio=None,
-            location=None):
+                       location=None):
         account = self.accman.get(account_id)
         return account.update_profile(fullname, url, bio, location)
 
@@ -344,7 +345,8 @@ class Core:
         # Returns the path of profile image for the user who post the status
         # in avatar size (48x48)
         account = self.accman.get(status.account_id)
-        basename = "%s-%s-avatar-%s" % (status.account_id, status.username, os.path.basename(status.avatar))
+        basename = "%s-%s-avatar-%s" % (
+            status.account_id, status.username, os.path.basename(status.avatar))
         img_destination_path = os.path.join(account.config.imgdir, basename)
         if not os.path.isfile(img_destination_path):
             fp = open(img_destination_path, 'w')
@@ -352,9 +354,9 @@ class Core:
             fp.close()
         return img_destination_path
 
-    ###########################################################################
+    #
     # Services API
-    ###########################################################################
+    #
 
     def available_short_url_services(self):
         return URL_SERVICES.keys()
@@ -399,9 +401,9 @@ class Core:
         uploader = UPLOAD_MEDIA_SERVICES[service]
         return uploader.do_service(account, filepath, message)
 
-    ###########################################################################
+    #
     # Configuration API
-    ###########################################################################
+    #
 
     def get_shorten_url_service(self):
         return self.config.read('Services', 'shorten-url')

@@ -5,6 +5,7 @@ import tempfile
 
 
 class Media(object):
+
     """
     This class models a media object (image, video or map) that can be rendered
     on the UI. *type_* could be :var:`libturpial.api.models.media.IMAGE`,

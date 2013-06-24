@@ -8,15 +8,20 @@ import os
 _services = dict()
 
 # remove any template comments
+
+
 def remove_comments(text):
 
     output = str()
     for line in text.splitlines():
-        if line.startswith('##'): continue
+        if line.startswith('##'):
+            continue
         output += line + '\n'
     return output
 
 # process module source
+
+
 def process_module(name, source):
 
     output = str()
@@ -27,7 +32,7 @@ def process_module(name, source):
             # is a url tag?
             pos = line.find('@url')
             if pos >= 0:
-                urls = line[pos+4:].split()
+                urls = line[pos + 4:].split()
                 _services.update(dict((url.strip(), name) for url in urls))
                 output += '# %s\n' % name
         else:
@@ -37,6 +42,7 @@ def process_module(name, source):
     output += '%s = %s()\n' % (name, name.capitalize())
 
     return output
+
 
 def compile_shorty(services):
 
@@ -71,8 +77,8 @@ def compile_shorty(services):
 
     # write out services dict
     sfp.write('\nservices = {\n')
-    for k,v in _services.items():
-        sfp.write("    '%s': %s,\n" % (k,v))
+    for k, v in _services.items():
+        sfp.write("    '%s': %s,\n" % (k, v))
     sfp.write('}\n\n')
 
     sfp.close()
@@ -94,4 +100,3 @@ if __name__ == '__main__':
 
     # compile shorty
     compile_shorty(services)
-

@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url chilp.it
+# @url chilp.it
+
+
 class Chilpit(Service):
 
     def shrink(self, bigurl):
@@ -35,4 +37,3 @@ class Chilpit(Service):
             return int(hit_count)
         except:
             raise ShortyError('Url not found or invalid')
-

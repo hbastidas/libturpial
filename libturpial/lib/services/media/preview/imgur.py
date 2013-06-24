@@ -11,6 +11,7 @@ API_KEY = '7ea1d30de2992c783a567df86faa388e'
 
 
 class ImgurMediaContent(PreviewMediaService):
+
     def __init__(self):
         PreviewMediaService.__init__(self)
         self.url_pattern = "(http(s)?://)?imgur.com"

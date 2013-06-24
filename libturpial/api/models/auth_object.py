@@ -7,6 +7,7 @@
 
 
 class AuthObject:
+
     def __init__(self, type_, acc, token=None, url=None):
         self.type_ = type_
         self.token = token

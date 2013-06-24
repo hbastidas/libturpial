@@ -7,6 +7,7 @@ from libturpial.lib.services.media.upload.base import UploadService
 
 
 class ImglyUploader(UploadService):
+
     def __init__(self):
         UploadService.__init__(self, "img.ly", "/api/2/upload.xml")
 

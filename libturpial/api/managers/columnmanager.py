@@ -4,7 +4,9 @@ from libturpial.api.models.column import Column
 from libturpial.exceptions import ColumnAlreadyRegistered
 from libturpial.common import get_account_id_from, get_column_type_from
 
+
 class ColumnManager:
+
     def __init__(self, config):
         self.config = config
         self.__load_registered()
@@ -21,9 +23,10 @@ class ColumnManager:
         for column_id in self.config.get_stored_columns():
             account_id = get_account_id_from(column_id)
             column_type = get_column_type_from(column_id)
-            if not self.__registered_columns.has_key(account_id):
+            if account_id not in self.__registered_columns:
                 self.__registered_columns[account_id] = []
-            self.__registered_columns[account_id].append(Column(account_id, column_type))
+            self.__registered_columns[account_id].append(
+                Column(account_id, column_type))
 
     def __count(self):
         count = 0
@@ -68,4 +71,3 @@ class ColumnManager:
                 if col.id_ == column_id:
                     return True
         return False
-

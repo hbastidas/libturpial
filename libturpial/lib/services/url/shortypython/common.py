@@ -1,8 +1,9 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## Common code used in all compiled versions of shorty.
+# Common code used in all compiled versions of shorty.
+
 
 class ShortyError(Exception):
 
@@ -13,6 +14,8 @@ class ShortyError(Exception):
         return repr(self.reason)
 
 """Do a http request"""
+
+
 def request(url, parameters=None, username_pass=None, post_data=None, headers={}):
 
     # build url + parameters
@@ -23,7 +26,8 @@ def request(url, parameters=None, username_pass=None, post_data=None, headers={}
 
     # if username and pass supplied, build basic auth header
     if username_pass:
-        headers['Authorization'] = 'Basic %s' % base64.b64encode('%s:%s' % username_pass)
+        headers['Authorization'] = 'Basic %s' % base64.b64encode(
+            '%s:%s' % username_pass)
 
     # send request
     try:
@@ -31,29 +35,34 @@ def request(url, parameters=None, username_pass=None, post_data=None, headers={}
         if post_data:
             req.add_data(post_data)
         return urlopen(req)
-    except URLError, e:
+    except URLError as e:
         raise ShortyError(e)
+
 
 def get_redirect(url):
 
     class StopRedirectHandler(HTTPRedirectHandler):
+
         def http_error_301(self, req, fp, code, smg, headers):
             return None
+
         def http_error_302(self, req, fp, code, smg, headers):
             return None
     o = build_opener(StopRedirectHandler())
     try:
         o.open(url)
-    except HTTPError, e:
+    except HTTPError as e:
         if e.code == 301 or e.code == 302:
             return e.headers['Location']
         else:
             raise ShortyError(e)
-    except URLError, e:
+    except URLError as e:
         raise ShortyError(e)
     return None
 
 """Base interface that all services implement."""
+
+
 class Service(object):
 
     tested = False
@@ -64,7 +73,7 @@ class Service(object):
         # first shrink an url
         try:
             turl = self.shrink('http://test.com')
-        except ShortyError, e:
+        except ShortyError as e:
             raise ShortyError('@shrink ' + e.reason)
 
         # second expand url and verify
@@ -75,7 +84,7 @@ class Service(object):
                 return True
             else:
                 return False
-        except ShortyError, e:
+        except ShortyError as e:
             raise ShortyError('@expand ' + e.reason)
 
     def shrink(self, bigurl):
@@ -90,17 +99,21 @@ class Service(object):
 Shrink the given url for the specified service domain.
 Returns the tiny url OR None if service not supported.
 """
+
+
 def shrink(service_domain, bigurl, *args, **kargs):
 
     s = services.get(service_domain)
     if not s:
         return None
     return s.shrink(bigurl, *args, **kargs)
-    
+
 """
 Expand tiny url into its full url.
 Returns long url if successful or None if failure.
 """
+
+
 def expand(tinyurl):
 
     turl = urlparse(tinyurl)

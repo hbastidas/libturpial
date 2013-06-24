@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+
 class Proxy:
+
     """
     This class models the information of a proxy server used to establish an
     HTTP connection. *host* and *port* are required. For an authenticated

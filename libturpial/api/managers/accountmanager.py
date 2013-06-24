@@ -3,11 +3,12 @@
 from libturpial.common import build_account_id
 from libturpial.api.models.account import Account
 from libturpial.exceptions import ErrorCreatingAccount, \
-        ErrorLoadingAccount, AccountNotAuthenticated, \
-        AccountAlreadyRegistered
+    ErrorLoadingAccount, AccountNotAuthenticated, \
+    AccountAlreadyRegistered
 
 
 class AccountManager:
+
     def __init__(self, config):
         self.config = config
         self.__accounts = {}
@@ -26,8 +27,8 @@ class AccountManager:
 
     def load(self, account_id):
         # TODO: Set the timeout
-        #timeout = int(self.config.read('Advanced', 'socket-timeout'))
-        #self.protocol.timeout = timeout
+        # timeout = int(self.config.read('Advanced', 'socket-timeout'))
+        # self.protocol.timeout = timeout
 
         self.__accounts[account_id] = Account.load(account_id)
         return self.__accounts[account_id]

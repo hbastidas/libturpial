@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url buk.me
+# @url buk.me
+
+
 class Bukme(Service):
 
     def _process(self, resp):
@@ -23,4 +25,3 @@ class Bukme(Service):
     def expand(self, tinyurl):
         resp = request('http://buk.me/api.php', {'rev': tinyurl})
         return self._process(resp.read())
-

@@ -35,7 +35,7 @@ class Status:
 
     def get_mentions(self):
         """
-        Returns all usernames mentioned in status (even the author of the 
+        Returns all usernames mentioned in status (even the author of the
         status)
         """
         account = self.account_id.split('-')[0]
@@ -63,7 +63,7 @@ class Status:
 
     def get_source(self, source):
         """
-        Parse the source text in the status and store it in a 
+        Parse the source text in the status and store it in a
         :class:`libturpial.api.models.client.Client` object.
         """
         if not source:

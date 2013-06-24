@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url bit.ly
+# @url bit.ly
+
+
 class Bitly(Service):
 
     version = '2.0.1'
@@ -15,7 +17,7 @@ class Bitly(Service):
     def _test(self):
         # prompt for login
         self.login = raw_input('bitly login: ')
-        
+
         # ask if tester wants to provide apikey or password
         print 'auth with password(P) or apikey(K)?'
         if raw_input() == 'P':
@@ -64,7 +66,8 @@ class Bitly(Service):
             return get_redirect(tinyurl)
         parameters, username_pass = self._setup()
         parameters['shortUrl'] = tinyurl
-        resp = request('http://api.bit.ly/v3/clicks', parameters, username_pass)
+        resp = request(
+            'http://api.bit.ly/v3/clicks', parameters, username_pass)
         jdata = json.loads(resp.read())
         if jdata['status_code'] != 200:
             raise ShortyError(jdata['errorMessage'])
@@ -76,4 +79,3 @@ class Bitly(Service):
     def qrcode(self, tinyurl):
         qrdata = request(tinyurl + '.qrcode').read()
         return qrdata
-

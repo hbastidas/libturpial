@@ -1,7 +1,9 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
+# Shorty
+# Copyright 2009 Joshua Roesslein
 
-## @url cli.gs
+# @url cli.gs
+
+
 class Cligs(Service):
 
     def __init__(self, apikey=None, appid=None):
@@ -24,4 +26,3 @@ class Cligs(Service):
         '''resp = request('http://cli.gs/api/v1/cligs/expand', {'clig': tinyurl})
         return resp.read()'''
         return get_redirect(tinyurl)
-

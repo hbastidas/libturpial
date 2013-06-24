@@ -22,4 +22,3 @@ mysandbox.shrink(url)
 # If you require a list of all supported services
 # for displaying in your UI as a dropdown menu or such
 supported_services = shorty.services.keys()
-

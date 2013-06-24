@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url xr.com x.bb
+# @url xr.com x.bb
+
+
 class Xr(Service):
 
     def __init__(self, account_name=None):
@@ -24,4 +26,3 @@ class Xr(Service):
             return url
         else:
             raise ShortyError(url)
-

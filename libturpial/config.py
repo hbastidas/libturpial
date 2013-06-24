@@ -13,7 +13,7 @@ import ConfigParser
 
 from libturpial.common import get_username_from, get_protocol_from
 from libturpial.exceptions import EmptyOAuthCredentials, EmptyBasicCredentials, \
-        ExpressionAlreadyFiltered
+    ExpressionAlreadyFiltered
 
 try:
     from xdg import BaseDirectory
@@ -22,7 +22,7 @@ except:
     XDG_CACHE = False
 
 APP_CFG = {
-    'General':{
+    'General': {
         'update-interval': '5',
         'profile-color': 'on',
         'minimize-on-close': 'on',
@@ -34,25 +34,25 @@ APP_CFG = {
         'state': 'windowed',
         'visibility': 'show',
     },
-    'Columns':{
+    'Columns': {
     },
-    'Notifications':{
+    'Notifications': {
         'updates': 'on',
         'login': 'on',
         'icon': 'on',
     },
-    'Sounds':{
+    'Sounds': {
         'updates': 'on',
         'login': 'on',
     },
-    'Services':{
+    'Services': {
         'shorten-url': 'is.gd',
         'upload-pic': 'twitpic',
     },
-    'Browser':{
+    'Browser': {
         'cmd': ''
     },
-    'Proxy':{
+    'Proxy': {
         'username': '',
         'password': '',
         'server': '',
@@ -65,12 +65,12 @@ APP_CFG = {
 }
 
 ACCOUNT_CFG = {
-    'OAuth':{
+    'OAuth': {
         'verifier': '',
         'key': '',
         'secret': '',
     },
-    'Login':{
+    'Login': {
         'username': '',
         'protocol': '',
     }
@@ -79,7 +79,9 @@ ACCOUNT_CFG = {
 USERDIR = os.path.expanduser('~')
 BASEDIR = os.path.join(USERDIR, '.config', 'turpial')
 
+
 class ConfigBase:
+
     """Base configuration"""
     def __init__(self, default=None):
         self.__config = {}
@@ -104,7 +106,7 @@ class ConfigBase:
         self.cfg.read(self.configpath)
 
         for section, _v in self.default.iteritems():
-            if not self.__config.has_key(section):
+            if section not in self.__config:
                 self.__config[section] = {}
             if not self.cfg.has_section(section):
                 self.write_section(section, self.default[section])
@@ -114,7 +116,8 @@ class ConfigBase:
                 continue
             for option, value in self.default[section].iteritems():
                 if self.cfg.has_option(section, option):
-                    self.__config[section][option] = self.cfg.get(section, option)
+                    self.__config[section][
+                        option] = self.cfg.get(section, option)
                 else:
                     self.write(section, option, value)
 
@@ -129,7 +132,7 @@ class ConfigBase:
         _fd = open(self.configpath, 'w')
         self.__config = {}
         for section, _v in config.iteritems():
-            if not self.__config.has_key(section):
+            if section not in self.__config:
                 self.__config[section] = {}
             for option, value in config[section].iteritems():
                 self.cfg.set(section, option, value)
@@ -145,7 +148,7 @@ class ConfigBase:
         self.__config[section][option] = value
 
     def write_section(self, section, items):
-        #self.log.debug('Writing section %s' % section)
+        # self.log.debug('Writing section %s' % section)
         _fd = open(self.configpath, 'w')
         if self.cfg.has_section(section):
             self.cfg.remove_section(section)
@@ -164,7 +167,7 @@ class ConfigBase:
             return None
 
     def read_section(self, section):
-        #self.log.debug('Reading section %s' % section)
+        # self.log.debug('Reading section %s' % section)
         try:
             return self.__config[section]
         except Exception:
@@ -177,7 +180,9 @@ class ConfigBase:
         except Exception:
             return None
 
+
 class AppConfig(ConfigBase):
+
     """ Handle app configuration """
     def __init__(self):
         ConfigBase.__init__(self)
@@ -264,8 +269,7 @@ class AppConfig(ConfigBase):
 
     def get_stored_columns(self):
         stored_cols = self.read_section('Columns')
-        indexes = stored_cols.keys()
-        indexes.sort()
+        indexes = sorted(stored_cols.keys())
         columns = []
 
         for i in indexes:
@@ -278,6 +282,7 @@ class AppConfig(ConfigBase):
         os.remove(self.configpath)
         self.log.debug('Deleted current config. Please restart Turpial')
 
+
 class AccountConfig(ConfigBase):
 
     def __init__(self, account_id):
@@ -287,7 +292,8 @@ class AccountConfig(ConfigBase):
 
         if XDG_CACHE:
             cachedir = BaseDirectory.xdg_cache_home
-            self.imgdir = os.path.join(cachedir, 'turpial', account_id, 'images')
+            self.imgdir = os.path.join(
+                cachedir, 'turpial', account_id, 'images')
         else:
             self.imgdir = os.path.join(self.basedir, 'images')
 
@@ -305,7 +311,7 @@ class AccountConfig(ConfigBase):
 
         try:
             self.load()
-        except Except, exc:
+        except Except as exc:
             self.load_failsafe()
 
         if not self.exists(account_id):
@@ -320,7 +326,6 @@ class AccountConfig(ConfigBase):
         if not os.path.isfile(configpath):
             return False
         return True
-
 
     def save_oauth_credentials(self, key, secret, verifier):
         self.write('OAuth', 'key', key)

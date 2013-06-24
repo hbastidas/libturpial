@@ -5,7 +5,9 @@
 from libturpial.api.models.media import *
 from libturpial.lib.services.media.preview.base import *
 
+
 class TwitpicMediaContent(PreviewMediaService):
+
     def __init__(self):
         PreviewMediaService.__init__(self)
         self.url_pattern = "(http(s)?://)?twitpic.com"

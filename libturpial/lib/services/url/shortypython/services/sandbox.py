@@ -1,9 +1,11 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url sandbox.com
-## used for testing
+# @url sandbox.com
+# used for testing
+
+
 class Sandbox(Service):
 
     def __init__(self, length=4, letters='abcdefghijklmnopqrstuvwxyz'):
@@ -18,7 +20,7 @@ class Sandbox(Service):
         while True:
             for i in range(self.length):
                 tpath += self.letters[randint(0, self.base)]
-            if self.urls.has_key(tpath):
+            if tpath in self.urls:
                 # tpath already in use, regen another
                 tpath = ''
             else:
@@ -34,4 +36,3 @@ class Sandbox(Service):
         if turl[1] != 'sandbox.com':
             raise ShortyError('Not a sandbox url')
         return self.urls.get(turl[2].strip('/'))
-

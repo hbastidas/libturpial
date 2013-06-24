@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url burnurl.com
+# @url burnurl.com
+
+
 class Burnurl(Service):
 
     def _test(self):
@@ -14,11 +16,11 @@ class Burnurl(Service):
             return False
 
     def shrink(self, bigurl):
-        resp = request('http://burnurl.com/', {'url': bigurl, 'output': 'plain'})
+        resp = request('http://burnurl.com/', {
+                       'url': bigurl, 'output': 'plain'})
         return resp.read()
 
     def expand(self, tinyurl):
         # burnurl uses iframes for displaying original url
         # so we cannot expand them using the 301 redirect :(
         return None
-

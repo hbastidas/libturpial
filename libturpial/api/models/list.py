@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+
 class List:
+
     """
     This class handles the information about a user list. It receives the
     *id_*, the *user* who owns it, the *name* (also known as slug), the *title*

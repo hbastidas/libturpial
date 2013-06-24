@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url is.gd
+# @url is.gd
+
+
 class Isgd(Service):
 
     def shrink(self, bigurl):
@@ -11,4 +13,3 @@ class Isgd(Service):
         if turl.startswith('Error:'):
             raise ShortyError(turl)
         return turl
-

@@ -19,6 +19,7 @@ from libturpial.common import NUM_STATUSES, StatusColumn, build_account_id
 # * Implement trends
 
 class Main(Protocol):
+
     """Twitter implementation for libturpial"""
     def __init__(self):
         self.id_ = 'twitter'
@@ -39,10 +40,10 @@ class Main(Protocol):
         """
         Receives a json response and raise an exception if there are errors
         """
-        if type(response) == list:
+        if isinstance(response, list):
             return
 
-        if response.has_key('errors'):
+        if 'errors' in response:
             print response
             code = response['errors'][0]['code']
             if code == 32 or code == 215 or code == 401:
@@ -70,7 +71,6 @@ class Main(Protocol):
             elif code == 502:
                 raise ServiceDown
 
-
     def initialize_http(self):
         self.http = TurpialHTTPOAuth(self.base_url, OAUTH_OPTIONS)
 
@@ -88,15 +88,15 @@ class Main(Protocol):
     def authorize_token(self, pin):
         self.http.authorize_token(pin)
         self.http.set_token_info(self.http.token.key, self.http.token.secret,
-            self.http.token.verifier)
+                                 self.http.token.verifier)
         return self.verify_credentials()
 
     def get_oauth_token(self):
         return self.http.token
 
-    #################################################################
+    #
     # Methods related to Twitter service
-    #################################################################
+    #
 
     def verify_credentials_provider(self, format_='json'):
         return "%s/account/verify_credentials.%s" % (self.base_url, format_)
@@ -171,9 +171,9 @@ class Main(Protocol):
     def get_conversation(self, status_id):
         conversation = []
 
-        while 1:
+        while True:
             rtn = self.http.get('/statuses/show', {'id': status_id,
-                               'include_entities': True})
+                                                   'include_entities': True})
             conversation.append(self.json_to_status(rtn,
                                 StatusColumn.CONVERSATION))
 
@@ -185,7 +185,7 @@ class Main(Protocol):
 
     def get_status(self, status_id):
         rtn = self.http.get('/statuses/show', {'id': status_id,
-                           'include_entities': True})
+                                               'include_entities': True})
         self.check_for_errors(rtn)
         return self.json_to_status(rtn)
 
@@ -195,7 +195,7 @@ class Main(Protocol):
         max_friends_req = 100
         followers = []
 
-        while 1:
+        while True:
             # Fetch user_ids (up to 5000 for each request)
             rtn = self.http.get('/followers/ids', {'cursor': cursor})
             total = len(rtn['ids'])
@@ -206,7 +206,7 @@ class Main(Protocol):
                 for id_ in rtn['ids']:
                     followers.append(str(id_))
             else:
-                while 1:
+                while True:
                     if current + max_friends_req <= total:
                         batch = rtn['ids'][current:current + max_friends_req]
                         current += max_friends_req
@@ -216,7 +216,8 @@ class Main(Protocol):
 
                     # Fetch user details (up to 100 for each request)
                     user_ids = ','.join([str(x) for x in batch])
-                    rtn2 = self.http.get('/users/lookup', {'user_id': user_ids})
+                    rtn2 = self.http.get(
+                        '/users/lookup', {'user_id': user_ids})
                     for user in rtn2:
                         followers.append(self.json_to_profile(user))
                     if current == total:
@@ -235,7 +236,7 @@ class Main(Protocol):
         max_friends_req = 100
         following = []
 
-        while 1:
+        while True:
             # Fetch user_ids (up to 5000 for each request)
             rtn = self.http.get('/friends/ids', {'cursor': cursor})
             total = len(rtn['ids'])
@@ -246,7 +247,7 @@ class Main(Protocol):
                 for id_ in rtn['ids']:
                     following.append(str(id_))
             else:
-                while 1:
+                while True:
                     if current + max_friends_req <= total:
                         batch = rtn['ids'][current:current + max_friends_req]
                         current += max_friends_req
@@ -256,7 +257,8 @@ class Main(Protocol):
 
                     # Fetch user details (up to 100 for each request)
                     user_ids = ','.join([str(x) for x in batch])
-                    rtn2 = self.http.get('/users/lookup', {'user_id': user_ids})
+                    rtn2 = self.http.get(
+                        '/users/lookup', {'user_id': user_ids})
                     for user in rtn2:
                         following.append(self.json_to_profile(user))
                     if current == total:
@@ -273,8 +275,8 @@ class Main(Protocol):
         rtn = self.http.get('/users/show', {'screen_name': user})
         profile = self.json_to_profile(rtn)
         rtn = self.http.get('/statuses/user_timeline',
-                           {'screen_name': user, 'count': 10,
-                           'include_entities': True})
+                            {'screen_name': user, 'count': 10,
+                             'include_entities': True})
         profile.recent_updates = self.json_to_status(rtn)
         return profile
 
@@ -324,7 +326,7 @@ class Main(Protocol):
 
     def destroy_status(self, status_id):
         rtn = self.http.post('/statuses/destroy', {'id': status_id,
-                           'include_entities': True})
+                                                   'include_entities': True})
         self.check_for_errors(rtn)
         return self.json_to_status(rtn)
 
@@ -337,13 +339,13 @@ class Main(Protocol):
 
     def mark_as_favorite(self, status_id):
         rtn = self.http.post('/favorites/create', {'id': status_id,
-                           'include_entities': True}, id_in_url=False)
+                                                   'include_entities': True}, id_in_url=False)
         self.check_for_errors(rtn)
         return self.json_to_status(rtn)
 
     def unmark_as_favorite(self, status_id):
         rtn = self.http.post('/favorites/destroy', {'id': status_id,
-                           'include_entities': True}, id_in_url=False)
+                                                    'include_entities': True}, id_in_url=False)
         self.check_for_errors(rtn)
         return self.json_to_status(rtn)
 
@@ -358,7 +360,7 @@ class Main(Protocol):
 
     def unfollow(self, screen_name):
         rtn = self.http.post('/friendships/destroy',
-                           {'screen_name': screen_name})
+                             {'screen_name': screen_name})
         self.check_for_errors(rtn)
         return self.json_to_profile(rtn)
 
@@ -370,8 +372,9 @@ class Main(Protocol):
         return self.json_to_status(rtn)
 
     def destroy_direct_message(self, direct_message_id):
-        rtn = self.http.post('/direct_messages/destroy', {'id': direct_message_id,
-                           'include_entities': True})
+        rtn = self.http.post(
+            '/direct_messages/destroy', {'id': direct_message_id,
+                                         'include_entities': True})
         self.check_for_errors(rtn)
         return self.json_to_status(rtn)
 
@@ -386,7 +389,8 @@ class Main(Protocol):
         return self.json_to_profile(rtn)
 
     def report_as_spam(self, screen_name):
-        rtn = self.http.post('/users/report_spam', {'screen_name': screen_name})
+        rtn = self.http.post('/users/report_spam', {
+                             'screen_name': screen_name})
         self.check_for_errors(rtn)
         return self.json_to_profile(rtn)
 
@@ -402,17 +406,17 @@ class Main(Protocol):
 
     def is_friend(self, user):
         result = self.http.get('/friendships/show',
-                              {'source_screen_name': self.uname,
-                              'target_screen_name': user})
+                               {'source_screen_name': self.uname,
+                                'target_screen_name': user})
         return result['relationship']['target']['following']
 
     def get_profile_image(self, user):
         rtn = self.http.get('/users/show', {'screen_name': user})
         return rtn['profile_image_url'].replace('_normal', '')
 
-    #################################################################
+    #
     # Methods to convert JSON responses into objects
-    #################################################################
+    #
 
     # TODO: Try to do this with metaprogramming (a single JSON object that
     # knows how to become a turpial object
@@ -446,7 +450,8 @@ class Main(Protocol):
             if 'status' in response:
                 profile.last_update = response['status']['text']
                 profile.last_update_id = response['status']['id']
-            profile.link_color = ('#' + response['profile_link_color']) or Profile.DEFAULT_LINK_COLOR
+            profile.link_color = ('#' + response[
+                                  'profile_link_color']) or Profile.DEFAULT_LINK_COLOR
             return profile
 
     def json_to_status(self, response, column_id='', _type=Status.NORMAL):
@@ -458,10 +463,10 @@ class Main(Protocol):
                 status = self.json_to_status(resp, column_id, _type)
                 if status.reposted_by:
                     # TODO: Handle this
-                    #users = self.get_retweet_users(status.id_)
-                    #status.reposted_by = users
-                    #count = self.get_retweet_count(status.id_)
-                    #status.reposted_count = count
+                    # users = self.get_retweet_users(status.id_)
+                    # status.reposted_by = users
+                    # count = self.get_retweet_count(status.id_)
+                    # status.reposted_count = count
                     pass
                 statuses.append(status)
             return statuses

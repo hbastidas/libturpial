@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url short.ie
+# @url short.ie
+
+
 class Shortie(Service):
 
     def __init__(self, email=None, secretkey=None):
@@ -33,4 +35,3 @@ class Shortie(Service):
         if jdata['error']['code'] != 0:
             raise ShortyError(jdata['error']['msg'])
         return str(jdata['shortened'])
-

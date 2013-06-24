@@ -1,15 +1,17 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url budurl.com
+# @url budurl.com
+
+
 class Budurl(Service):
 
     def __init__(self, apikey=None):
         self.apikey = apikey
 
     def _test(self):
-        #prompt for apikey
+        # prompt for apikey
         self.apikey = raw_input('budurl apikey: ')
         Service._test(self)
 
@@ -27,10 +29,10 @@ class Budurl(Service):
             return str(jdata['budurl'])
 
     def expand(self, tinyurl):
-        resp = request('http://budurl.com/api/v1/budurls/expand', {'budurl': tinyurl})
+        resp = request('http://budurl.com/api/v1/budurls/expand', {
+                       'budurl': tinyurl})
         jdata = json.loads(resp.read())
         if jdata['success'] != 1:
             raise ShortyError(jdata['error_message'])
         else:
             return str(jdata['long_url'])
-

@@ -9,11 +9,12 @@ from libturpial.lib.interfaces.protocol import Protocol
 
 from libturpial.common import *
 from libturpial.exceptions import EmptyOAuthCredentials, \
-        EmptyBasicCredentials, ErrorLoadingAccount
+    EmptyBasicCredentials, ErrorLoadingAccount
 
 
 class Account(object):
     # TODO: Update doc
+
     """
     This class holds all related methods to an user account. It contains a
     protocol instance associated to the user and the profile model to store the
@@ -102,7 +103,7 @@ class Account(object):
         existing configuration. If the *account_id* does not correspond to a
         valid account returns a
         :class:`libturpial.exceptions.ErrorLoadingAccount` exception.
-        If credentials in configuration file are empty it returns a 
+        If credentials in configuration file are empty it returns a
         :class:`libturpial.exceptions.EmptyOAuthCredentials` or a
         :class:`libturpial.exceptions.EmptyBasicCredentials` exception.
         """
@@ -130,7 +131,8 @@ class Account(object):
         self.config = AccountConfig(self.id_)
         token = self.get_oauth_token()
         if token:
-            self.config.save_oauth_credentials(token.key, token.secret, token.verifier)
+            self.config.save_oauth_credentials(
+                token.key, token.secret, token.verifier)
 
     def fetch(self):
         self.profile = self.protocol.verify_credentials()
@@ -183,7 +185,8 @@ class Account(object):
         return self.profile != None and self.id_ != None
 
     def update_profile(self, fullname=None, url=None, bio=None, location=None):
-        self.profile = self.protocol.update_profile(fullname, url, bio, location)
+        self.profile = self.protocol.update_profile(
+            fullname, url, bio, location)
         return self.profile
 
     def __getattr__(self, name):

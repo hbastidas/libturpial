@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url hex.io
+# @url hex.io
+
+
 class Hexio(Service):
 
     def shrink(self, bigurl):
@@ -12,4 +14,3 @@ class Hexio(Service):
             return url
         else:
             raise ShortyError('Failed to shrink url')
-

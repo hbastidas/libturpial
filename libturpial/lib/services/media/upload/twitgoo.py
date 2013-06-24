@@ -7,6 +7,7 @@ from libturpial.lib.services.media.upload.base import UploadService
 
 
 class TwitgooUploader(UploadService):
+
     def __init__(self):
         UploadService.__init__(self, "twitgoo.com", "/api/upload")
 

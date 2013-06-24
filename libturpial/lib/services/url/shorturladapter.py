@@ -11,6 +11,7 @@ from libturpial.lib.interfaces.service import *
 
 
 class ShortUrlAdapter(GenericService):
+
     def __init__(self, obj):
         GenericService.__init__(self)
         self._obj = obj

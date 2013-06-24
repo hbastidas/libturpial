@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url fwd4.me
+# @url fwd4.me
+
+
 class Fwd4me(Service):
 
     ecodes = {
@@ -21,4 +23,3 @@ class Fwd4me(Service):
             raise ShortyError(Fwd4me.ecodes.get(ecode, 'Unkown error'))
         else:
             return data
-

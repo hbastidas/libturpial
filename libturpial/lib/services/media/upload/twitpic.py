@@ -9,6 +9,7 @@ TWITPIC_KEY = '57d17b42f1001ffc64bf22ceef98968d'
 
 
 class TwitpicUploader(UploadService):
+
     def __init__(self):
         UploadService.__init__(self, "api.twitpic.com", "/2/upload.xml")
 

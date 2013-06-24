@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url fon.gs
+# @url fon.gs
+
+
 class Fongs(Service):
 
     def shrink(self, bigurl, tag=None):
@@ -36,4 +38,3 @@ class Fongs(Service):
         else:
             turl = tinyurl
         return Service.expand(self, turl)
-

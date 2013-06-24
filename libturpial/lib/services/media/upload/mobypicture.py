@@ -9,6 +9,7 @@ MOBYPICTURE_KEY = 'uF6kIJuyGGKsol8i'
 
 
 class MobypictureUploader(UploadService):
+
     def __init__(self):
         UploadService.__init__(self, "api.mobypicture.com", "/2.0/upload.xml")
 

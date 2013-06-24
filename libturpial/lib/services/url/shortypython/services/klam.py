@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url kl.am
+# @url kl.am
+
+
 class Klam(Service):
 
     def __init__(self, apikey=None):
@@ -16,4 +18,3 @@ class Klam(Service):
             parameters['tags'] = tags
         resp = request('http://kl.am/api/shorten', parameters)
         return resp.read()
-

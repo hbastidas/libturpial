@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url snipurl.com snipr.com sn.im snurl.com
+# @url snipurl.com snipr.com sn.im snurl.com
+
+
 class Snipurl(Service):
 
     def __init__(self, user=None, apikey=None):
@@ -16,14 +18,14 @@ class Snipurl(Service):
         Service._test(self)
 
     def shrink(self, bigurl, custom=None, title=None, private_key=None,
-                owner=None, include_private_key=False):
+               owner=None, include_private_key=False):
         if self.user is None or self.apikey is None:
             raise ShortyError('Must set an user and apikey')
         parameters = {
             'sniplink': bigurl,
             'snipuser': self.user,
             'snipapi': self.apikey,
-            'snipformat': 'simple' 
+            'snipformat': 'simple'
         }
         if custom:
             parameters['snipnick'] = custom
@@ -36,7 +38,7 @@ class Snipurl(Service):
         if include_private_key:
             parameters['snipformat_includepk'] = 'Y'
         resp = request('http://snipurl.com/site/getsnip',
-                        post_data=urlencode(parameters))
+                       post_data=urlencode(parameters))
         return resp.read()
 
     def expand(self, tinyurl):
@@ -46,4 +48,3 @@ class Snipurl(Service):
             return url
         else:
             raise ShortyError('Invalid url')
-

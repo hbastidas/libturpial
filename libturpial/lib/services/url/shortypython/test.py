@@ -15,7 +15,7 @@ fails = 0
 if len(sys.argv) > 1:
     try:
         services = dict((name, shorty.services[name]) for name in sys.argv[1:])
-    except KeyError, k:
+    except KeyError as k:
         print 'ERROR: %s not valid service' % k
         exit(1)
 else:
@@ -30,7 +30,7 @@ for name, service in services.items():
         service._test()
         passes += 1
         print 'PASS: <%s>' % name
-    except shorty.ShortyError, e:
+    except shorty.ShortyError as e:
         fails += 1
         print 'FAIL: <%s> %s' % (name, e)
 

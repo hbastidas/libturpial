@@ -14,6 +14,7 @@ from libturpial.lib.http import TurpialHTTPBase
 
 
 class Protocol:
+
     """
     Bridge class to define abstract functions that must have any protocol
     implementation
@@ -93,10 +94,12 @@ class Protocol:
 
         for item in HASHTAG_PATTERN.findall(text):
             url = "%s/%s" % (self.hashtags_url, item[1:])
-            entities['hashtags'].append(Entity(self.account_id, url, item, item))
+            entities['hashtags'].append(Entity(
+                self.account_id, url, item, item))
 
         for item in MENTION_PATTERN.findall(text):
-            entities['mentions'].append(Entity(self.account_id, item[1:], item, item))
+            entities['mentions'].append(Entity(
+                self.account_id, item[1:], item, item))
         return entities
 
     # ------------------------------------------------------------
@@ -116,7 +119,6 @@ class Protocol:
         >>> self.http = TurpialHTTPBasicAuth(base_url)
         """
         raise NotImplementedError
-
 
     def request_access(self):
         """
@@ -443,7 +445,7 @@ class Protocol:
 
     def send_direct_message(self, user, text):
         # FIXME: Implementar
-        #raise NotImplementedError
+        # raise NotImplementedError
         pass
 
     def destroy_direct_message(self, direct_message_id):

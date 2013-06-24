@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2012 Andrea Stagi
-## See LICENSE
+# Shorty
+# Copyright 2012 Andrea Stagi
+# See LICENSE
 
-## @url git.io
+# @url git.io
+
+
 class Github(Service):
 
     def shrink(self, bigurl):

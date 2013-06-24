@@ -1,11 +1,11 @@
 """
      _                _
- ___| |__   ___  _ __| |_ _   _ 
+ ___| |__   ___  _ __| |_ _   _
 / __| '_ \ / _ \| '__| __| | | |
 \__ \ | | | (_) | |  | |_| |_| |
 |___/_| |_|\___/|_|   \__|\__, |
                            __/ |
-                          |___/ 
+                          |___/
 
 Access many URL shortening services from one library.
 
@@ -36,7 +36,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
-## !!! This file is machine generated !! ##
+# !!! This file is machine generated !! ##
 
 from urllib2 import urlopen, Request, URLError, HTTPError, HTTPRedirectHandler, build_opener
 from urllib import urlencode, quote
@@ -61,6 +61,8 @@ class ShortyError(Exception):
         return repr(self.reason)
 
 """Do a http request"""
+
+
 def request(url, parameters=None, username_pass=None, post_data=None, headers={}):
 
     # build url + parameters
@@ -71,7 +73,8 @@ def request(url, parameters=None, username_pass=None, post_data=None, headers={}
 
     # if username and pass supplied, build basic auth header
     if username_pass:
-        headers['Authorization'] = 'Basic %s' % base64.b64encode('%s:%s' % username_pass)
+        headers['Authorization'] = 'Basic %s' % base64.b64encode(
+            '%s:%s' % username_pass)
 
     # send request
     try:
@@ -79,29 +82,34 @@ def request(url, parameters=None, username_pass=None, post_data=None, headers={}
         if post_data:
             req.add_data(post_data)
         return urlopen(req)
-    except URLError, e:
+    except URLError as e:
         raise ShortyError(e)
+
 
 def get_redirect(url):
 
     class StopRedirectHandler(HTTPRedirectHandler):
+
         def http_error_301(self, req, fp, code, smg, headers):
             return None
+
         def http_error_302(self, req, fp, code, smg, headers):
             return None
     o = build_opener(StopRedirectHandler())
     try:
         o.open(url)
-    except HTTPError, e:
+    except HTTPError as e:
         if e.code == 301 or e.code == 302:
             return e.headers['Location']
         else:
             raise ShortyError(e)
-    except URLError, e:
+    except URLError as e:
         raise ShortyError(e)
     return None
 
 """Base interface that all services implement."""
+
+
 class Service(object):
 
     tested = False
@@ -112,7 +120,7 @@ class Service(object):
         # first shrink an url
         try:
             turl = self.shrink('http://test.com')
-        except ShortyError, e:
+        except ShortyError as e:
             raise ShortyError('@shrink ' + e.reason)
 
         # second expand url and verify
@@ -123,7 +131,7 @@ class Service(object):
                 return True
             else:
                 return False
-        except ShortyError, e:
+        except ShortyError as e:
             raise ShortyError('@expand ' + e.reason)
 
     def shrink(self, bigurl):
@@ -138,17 +146,21 @@ class Service(object):
 Shrink the given url for the specified service domain.
 Returns the tiny url OR None if service not supported.
 """
+
+
 def shrink(service_domain, bigurl, *args, **kargs):
 
     s = services.get(service_domain)
     if not s:
         return None
     return s.shrink(bigurl, *args, **kargs)
-    
+
 """
 Expand tiny url into its full url.
 Returns long url if successful or None if failure.
 """
+
+
 def expand(tinyurl):
 
     turl = urlparse(tinyurl)
@@ -162,6 +174,8 @@ def expand(tinyurl):
     return s.expand(tinyurl)
 
 # chilpit
+
+
 class Chilpit(Service):
 
     def shrink(self, bigurl):
@@ -198,6 +212,8 @@ class Chilpit(Service):
 chilpit = Chilpit()
 
 # cligs
+
+
 class Cligs(Service):
 
     def __init__(self, apikey=None, appid=None):
@@ -224,13 +240,15 @@ class Cligs(Service):
 cligs = Cligs()
 
 # budurl
+
+
 class Budurl(Service):
 
     def __init__(self, apikey=None):
         self.apikey = apikey
 
     def _test(self):
-        #prompt for apikey
+        # prompt for apikey
         self.apikey = raw_input('budurl apikey: ')
         Service._test(self)
 
@@ -248,7 +266,8 @@ class Budurl(Service):
             return str(jdata['budurl'])
 
     def expand(self, tinyurl):
-        resp = request('http://budurl.com/api/v1/budurls/expand', {'budurl': tinyurl})
+        resp = request('http://budurl.com/api/v1/budurls/expand', {
+                       'budurl': tinyurl})
         jdata = json.loads(resp.read())
         if jdata['success'] != 1:
             raise ShortyError(jdata['error_message'])
@@ -258,6 +277,8 @@ class Budurl(Service):
 budurl = Budurl()
 
 # hexio
+
+
 class Hexio(Service):
 
     def shrink(self, bigurl):
@@ -271,6 +292,8 @@ class Hexio(Service):
 hexio = Hexio()
 
 # snipurl
+
+
 class Snipurl(Service):
 
     def __init__(self, user=None, apikey=None):
@@ -284,14 +307,14 @@ class Snipurl(Service):
         Service._test(self)
 
     def shrink(self, bigurl, custom=None, title=None, private_key=None,
-                owner=None, include_private_key=False):
+               owner=None, include_private_key=False):
         if self.user is None or self.apikey is None:
             raise ShortyError('Must set an user and apikey')
         parameters = {
             'sniplink': bigurl,
             'snipuser': self.user,
             'snipapi': self.apikey,
-            'snipformat': 'simple' 
+            'snipformat': 'simple'
         }
         if custom:
             parameters['snipnick'] = custom
@@ -304,7 +327,7 @@ class Snipurl(Service):
         if include_private_key:
             parameters['snipformat_includepk'] = 'Y'
         resp = request('http://snipurl.com/site/getsnip',
-                        post_data=urlencode(parameters))
+                       post_data=urlencode(parameters))
         return resp.read()
 
     def expand(self, tinyurl):
@@ -318,6 +341,8 @@ class Snipurl(Service):
 snipurl = Snipurl()
 
 # fongs
+
+
 class Fongs(Service):
 
     def shrink(self, bigurl, tag=None):
@@ -355,6 +380,8 @@ class Fongs(Service):
 fongs = Fongs()
 
 # tinyurl
+
+
 class Tinyurl(Service):
 
     def shrink(self, bigurl):
@@ -364,6 +391,8 @@ class Tinyurl(Service):
 tinyurl = Tinyurl()
 
 # agd
+
+
 class Agd(Service):
 
     def shrink(self, bigurl, tag=None, password=None, expires=None):
@@ -375,16 +404,18 @@ class Agd(Service):
         if expires:
             post_param['validTill'] = expires
         resp = request('http://a.gd/?module=ShortURL&file=Add&mode=API',
-                        post_data = urlencode(post_param))
+                       post_data=urlencode(post_param))
         url = resp.read()
         if url.startswith('http://'):
             return url
         else:
-            raise ShortyError(url[url.find('>')+1:url.rfind('<')])
+            raise ShortyError(url[url.find('>') + 1:url.rfind('<')])
 
 agd = Agd()
 
 # bukme
+
+
 class Bukme(Service):
 
     def _process(self, resp):
@@ -409,6 +440,8 @@ class Bukme(Service):
 bukme = Bukme()
 
 # bitly
+
+
 class Bitly(Service):
 
     version = '2.0.1'
@@ -421,7 +454,7 @@ class Bitly(Service):
     def _test(self):
         # prompt for login
         self.login = raw_input('bitly login: ')
-        
+
         # ask if tester wants to provide apikey or password
         print 'auth with password(P) or apikey(K)?'
         if raw_input() == 'P':
@@ -470,7 +503,8 @@ class Bitly(Service):
             return get_redirect(tinyurl)
         parameters, username_pass = self._setup()
         parameters['shortUrl'] = tinyurl
-        resp = request('http://api.bit.ly/v3/clicks', parameters, username_pass)
+        resp = request(
+            'http://api.bit.ly/v3/clicks', parameters, username_pass)
         jdata = json.loads(resp.read())
         if jdata['status_code'] != 200:
             raise ShortyError(jdata['errorMessage'])
@@ -486,6 +520,8 @@ class Bitly(Service):
 bitly = Bitly()
 
 # shortie
+
+
 class Shortie(Service):
 
     def __init__(self, email=None, secretkey=None):
@@ -520,6 +556,8 @@ class Shortie(Service):
 shortie = Shortie()
 
 # klam
+
+
 class Klam(Service):
 
     def __init__(self, apikey=None):
@@ -537,6 +575,8 @@ class Klam(Service):
 klam = Klam()
 
 # digg
+
+
 class Digg(Service):
 
     def __init__(self, appkey=None):
@@ -553,7 +593,7 @@ class Digg(Service):
         if not self.appkey:
             raise ShortyError('Must set an appkey')
         resp = request('http://services.digg.com/url/short/create',
-            {'url': bigurl, 'appkey': self.appkey, 'type': 'json'})
+                       {'url': bigurl, 'appkey': self.appkey, 'type': 'json'})
         jdata = json.loads(resp.read())['shorturls'][0]
         self.itemid = jdata['itemid']
         self.view_count = jdata['view_count']
@@ -565,8 +605,8 @@ class Digg(Service):
             if turl[1].lstrip('www.') != 'digg.com':
                 raise ShortyError('Not a valid digg url')
             resp = request('http://services.digg.com/url/short/%s' % quote(
-                            turl[2].strip('/')),
-                            {'appkey': self.appkey, 'type': 'json'})
+                turl[2].strip('/')),
+                {'appkey': self.appkey, 'type': 'json'})
             jdata = json.loads(resp.read())['shorturls'][0]
             self.itemid = jdata['itemid']
             self.view_count = jdata['view_count']
@@ -579,22 +619,28 @@ class Digg(Service):
 digg = Digg()
 
 # tweetburner
+
+
 class Tweetburner(Service):
 
     def shrink(self, bigurl):
-        resp = request('http://tweetburner.com/links', post_data='link[url]=%s' % bigurl)
+        resp = request(
+            'http://tweetburner.com/links', post_data='link[url]=%s' % bigurl)
         return resp.read()
 
 tweetburner = Tweetburner()
 
 # ur1ca
+
+
 class Ur1ca(Service):
 
     def shrink(self, bigurl):
         resp = request('http://ur1.ca/',
-            post_data = urlencode({'longurl': bigurl, 'submit' : 'Make it an ur1!'}))
+                       post_data=urlencode({'longurl': bigurl, 'submit': 'Make it an ur1!'}))
         returned_data = resp.read()
-        matched_re = re.search('Your ur1 is: <a href="(http://ur1.ca/[^"]+)">\\1', returned_data)
+        matched_re = re.search(
+            'Your ur1 is: <a href="(http://ur1.ca/[^"]+)">\\1', returned_data)
         if matched_re:
             return matched_re.group(1)
         else:
@@ -603,6 +649,8 @@ class Ur1ca(Service):
 ur1ca = Ur1ca()
 
 # xr
+
+
 class Xr(Service):
 
     def __init__(self, account_name=None):
@@ -628,6 +676,8 @@ class Xr(Service):
 xr = Xr()
 
 # shortto
+
+
 class Shortto(Service):
 
     def shrink(self, bigurl):
@@ -641,6 +691,8 @@ class Shortto(Service):
 shortto = Shortto()
 
 # toly
+
+
 class Toly(Service):
 
     def shrink(self, bigurl):
@@ -648,6 +700,7 @@ class Toly(Service):
         return resp.read()
 
 toly = Toly()
+
 
 class Migreme(Service):
 
@@ -658,12 +711,14 @@ class Migreme(Service):
 migreme = Migreme()
 
 # google
+
+
 class Google(Service):
 
     def shrink(self, bigurl):
-        resp = request('https://www.googleapis.com/urlshortener/v1/url', 
-                        headers={"content-type":"application/json"}, 
-                        post_data=json.dumps({"longUrl": bigurl}))
+        resp = request('https://www.googleapis.com/urlshortener/v1/url',
+                       headers={"content-type": "application/json"},
+                       post_data=json.dumps({"longUrl": bigurl}))
         data = resp.read()
         jdata = json.loads(data)
         if 'id' not in jdata:
@@ -678,6 +733,8 @@ class Google(Service):
 google = Google()
 
 # trim
+
+
 class Trim(Service):
 
     def __init__(self, apikey=None, username_pass=None):
@@ -685,7 +742,7 @@ class Trim(Service):
         self.username_pass = username_pass
 
     def shrink(self, bigurl, custom=None, searchtags=None, privacycode=None,
-                newtrim=False, sandbox=False):
+               newtrim=False, sandbox=False):
         parameters = {}
         parameters['url'] = bigurl
         if custom:
@@ -700,9 +757,11 @@ class Trim(Service):
             parameters['sandbox'] = '1'
         if self.apikey:
             parameters['api_key'] = self.apikey
-        resp = request('http://api.tr.im/api/trim_url.json', parameters, self.username_pass)
+        resp = request(
+            'http://api.tr.im/api/trim_url.json', parameters, self.username_pass)
         jdata = json.loads(resp.read())
-        self.status = (int(jdata['status']['code']), str(jdata['status']['message']))
+        self.status = (int(jdata['status'][
+                       'code']), str(jdata['status']['message']))
         if not 200 <= self.status[0] < 300:
             raise ShortyError(self.status[1])
         self.trimpath = str(jdata['trimpath'])
@@ -718,9 +777,11 @@ class Trim(Service):
         parameters = {'trimpath': turl[2].strip('/')}
         if self.apikey:
             parameters['api_key'] = self.apikey
-        resp = request('http://api.tr.im/api/trim_destination.json', parameters)
+        resp = request(
+            'http://api.tr.im/api/trim_destination.json', parameters)
         jdata = json.loads(resp.read())
-        self.status = (int(jdata['status']['code']), str(jdata['status']['message']))
+        self.status = (int(jdata['status'][
+                       'code']), str(jdata['status']['message']))
         if not 200 <= self.status[0] < 300:
             raise ShortyError(self.status[1])
         return str(jdata['destination'])
@@ -728,6 +789,8 @@ class Trim(Service):
 trim = Trim()
 
 # urlborg
+
+
 class Urlborg(Service):
 
     def __init__(self, apikey=None):
@@ -741,7 +804,8 @@ class Urlborg(Service):
     def shrink(self, bigurl):
         if not self.apikey:
             raise ShortyError('Must set an apikey')
-        url = 'http://urlborg.com/api/%s/create/%s' % (self.apikey, quote(bigurl))
+        url = 'http://urlborg.com/api/%s/create/%s' % (
+            self.apikey, quote(bigurl))
         resp = request(url)
         turl = resp.read()
         if not turl.startswith('http://'):
@@ -752,16 +816,19 @@ class Urlborg(Service):
         if not self.apikey:
             return get_redirect(get_redirect(tinyurl))
         turl = urlparse(tinyurl)
-        url = 'http://urlborg.com/api/%s/url/info.json%s' % (self.apikey, turl[2])
+        url = 'http://urlborg.com/api/%s/url/info.json%s' % (
+            self.apikey, turl[2])
         resp = request(url)
         jdata = json.loads(resp.read())
-        if jdata.has_key('error'):
+        if 'error' in jdata:
             raise ShortyError('Invalid tiny url or apikey')
         return str(jdata['o_url'])
 
 urlborg = Urlborg()
 
 # fwd4me
+
+
 class Fwd4me(Service):
 
     ecodes = {
@@ -784,6 +851,8 @@ class Fwd4me(Service):
 fwd4me = Fwd4me()
 
 # isgd
+
+
 class Isgd(Service):
 
     def shrink(self, bigurl):
@@ -796,6 +865,8 @@ class Isgd(Service):
 isgd = Isgd()
 
 # sandbox
+
+
 class Sandbox(Service):
 
     def __init__(self, length=4, letters='abcdefghijklmnopqrstuvwxyz'):
@@ -810,7 +881,7 @@ class Sandbox(Service):
         while True:
             for i in range(self.length):
                 tpath += self.letters[randint(0, self.base)]
-            if self.urls.has_key(tpath):
+            if tpath in self.urls:
                 # tpath already in use, regen another
                 tpath = ''
             else:
@@ -830,6 +901,8 @@ class Sandbox(Service):
 sandbox = Sandbox()
 
 # github
+
+
 class Github(Service):
 
     def shrink(self, bigurl):
@@ -845,6 +918,8 @@ class Github(Service):
 github = Github()
 
 # hurlws
+
+
 class Hurlws(Service):
 
     def __init__(self, username=None):
@@ -854,12 +929,15 @@ class Hurlws(Service):
         parameters = {'url': bigurl}
         if self.username:
             parameters['user'] = self.username
-        resp = request('http://www.hurl.ws/api/', post_data=urlencode(parameters))
+        resp = request(
+            'http://www.hurl.ws/api/', post_data=urlencode(parameters))
         return resp.read()
 
 hurlws = Hurlws()
 
 # burnurl
+
+
 class Burnurl(Service):
 
     def _test(self):
@@ -871,7 +949,8 @@ class Burnurl(Service):
             return False
 
     def shrink(self, bigurl):
-        resp = request('http://burnurl.com/', {'url': bigurl, 'output': 'plain'})
+        resp = request('http://burnurl.com/', {
+                       'url': bigurl, 'output': 'plain'})
         return resp.read()
 
     def expand(self, tinyurl):
@@ -917,4 +996,3 @@ services = {
     'snipurl.com': snipurl,
     'migre.me': migreme,
 }
-

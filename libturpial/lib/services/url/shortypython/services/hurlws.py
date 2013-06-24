@@ -1,8 +1,10 @@
-## Shorty
-## Copyright 2009 Joshua Roesslein
-## See LICENSE
+# Shorty
+# Copyright 2009 Joshua Roesslein
+# See LICENSE
 
-## @url hurl.ws
+# @url hurl.ws
+
+
 class Hurlws(Service):
 
     def __init__(self, username=None):
@@ -12,6 +14,6 @@ class Hurlws(Service):
         parameters = {'url': bigurl}
         if self.username:
             parameters['user'] = self.username
-        resp = request('http://www.hurl.ws/api/', post_data=urlencode(parameters))
+        resp = request(
+            'http://www.hurl.ws/api/', post_data=urlencode(parameters))
         return resp.read()
-

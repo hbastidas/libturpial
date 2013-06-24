@@ -11,6 +11,7 @@ CLIENT_ID = '3ycgz7gzer80068s80t4xl1cs'
 
 
 class ViameMediaContent(PreviewMediaService):
+
     def __init__(self):
         PreviewMediaService.__init__(self)
         self.url_pattern = "(http(s)?://)?via.me"
